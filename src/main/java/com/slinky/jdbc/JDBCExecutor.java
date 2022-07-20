@@ -16,7 +16,6 @@ public class JDBCExecutor {
 
     public static void main(String[] args) {
         DatabaseConnectionManager dcm = new DatabaseConnectionManager(
-//                "localhost:5432", "hplussport", // this one not necessary in postgres i guess
                 "localhost", "hplussport",
                 "postgres", "password"
         );
@@ -51,6 +50,6 @@ public class JDBCExecutor {
         dbCustomer = customerDAO.update(dbCustomer);
         System.out.println(dbCustomer);
 
-        customerDAO.delete(dbCustomer.getId()); //object still exists after this thought
+        customerDAO.delete(dbCustomer.getId()); //object still exists after this tho ...
     }
 }
