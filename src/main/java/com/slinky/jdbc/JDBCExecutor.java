@@ -23,7 +23,6 @@ public class JDBCExecutor {
         try {
             Connection connection = dcm.getConnection();
             CustomerDAO customerDAO = new CustomerDAO(connection);
-
             routine(customerDAO);
 
         } catch (SQLException e) {
