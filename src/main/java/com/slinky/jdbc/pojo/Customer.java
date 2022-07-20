@@ -1,4 +1,4 @@
-package com.slinky.jdbc;
+package com.slinky.jdbc.pojo;
 
 import com.slinky.jdbc.util.DataTransferObject;
 

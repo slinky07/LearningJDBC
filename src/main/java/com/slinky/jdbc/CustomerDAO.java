@@ -1,5 +1,6 @@
 package com.slinky.jdbc;
 
+import com.slinky.jdbc.pojo.Customer;
 import com.slinky.jdbc.util.DataAccessObject;
 
 import java.sql.Connection;
