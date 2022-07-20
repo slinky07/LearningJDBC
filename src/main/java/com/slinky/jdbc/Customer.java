@@ -85,4 +85,15 @@ public class Customer implements DataTransferObject {
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
+
+    public String toString() {
+        return firstName + " " +
+                lastName +"\n Contact: " +
+                email +", " +
+                phone + "\n Address: " +
+                address + ", " +
+                city + ", " +
+                state + ", " +
+                zipCode;
+    }
 }

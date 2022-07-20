@@ -17,7 +17,8 @@ public class CustomerDAO extends DataAccessObject<Customer> {
             "email, phone, address, city, state, zipcode FROM customer WHERE customer_id =? ";
 
     private static final String UPDATE = "UPDATE customer SET first_name = ?, last_name=?, " +
-            "email = ?, phone = ?, address = ?, city = ?, state = ?, zipcode = ? WHERE customer id = ?";
+            "email = ?, phone = ?, address = ?, city = ?, state = ?, zipcode = ? WHERE customer_id = ?";
+
     public CustomerDAO(Connection connection) {
         super(connection);
     }
