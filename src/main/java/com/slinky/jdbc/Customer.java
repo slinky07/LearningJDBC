@@ -86,14 +86,18 @@ public class Customer implements DataTransferObject {
         this.zipCode = zipCode;
     }
 
+    @Override
     public String toString() {
-        return firstName + " " +
-                lastName +"\n Contact: " +
-                email +", " +
-                phone + "\n Address: " +
-                address + ", " +
-                city + ", " +
-                state + ", " +
-                zipCode;
+        return "Customer{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", address='" + address + '\'' +
+                ", city='" + city + '\'' +
+                ", state='" + state + '\'' +
+                ", zipCode='" + zipCode + '\'' +
+                '}';
     }
 }
