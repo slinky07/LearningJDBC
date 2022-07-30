@@ -1,6 +1,7 @@
 package com.slinky.jdbc;
 
 import com.slinky.jdbc.pojo.Customer;
+import com.slinky.jdbc.pojo.Orders;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,13 +17,16 @@ public class JDBCExecutor {
 
     public static void main(String[] args) {
         DatabaseConnectionManager dcm = new DatabaseConnectionManager(
-                "localhost", "hplussport",
-                "postgres", "password"
+            "localhost", "hplussport",
+            "postgres", "password"
         );
         try {
             Connection connection = dcm.getConnection();
             CustomerDAO customerDAO = new CustomerDAO(connection);
-            routine(customerDAO);
+            OrdersDAO ordersDAO = new OrdersDAO(connection);
+//            routine2(customerDAO);
+//            routine(customerDAO);
+            getOrder(ordersDAO, 1000);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -50,6 +54,34 @@ public class JDBCExecutor {
         dbCustomer = customerDAO.update(dbCustomer);
         System.out.println(dbCustomer);
 
-        customerDAO.delete(dbCustomer.getId()); //object still exists after this tho ...
+//        customerDAO.delete(dbCustomer.getId()); // how to delete a record.
+
+    }
+    private static void routine2(CustomerDAO customerDAO) {
+        Customer customer = new Customer();
+        customer.setFirstName("George");
+        customer.setLastName("Washington");
+        customer.setEmail("gwashington.wh.gov");
+        customer.setAddress("1234 Main St");
+        customer.setCity("Washington");
+        customer.setState("DC");
+        customer.setPhone("(555) 555-4131");
+        customer.setZipCode("02234");
+
+        Customer dbCustomer = customerDAO.create(customer);
+        System.out.println(dbCustomer);
+
+        dbCustomer = customerDAO.findById(dbCustomer.getId());
+        System.out.println(dbCustomer);
+
+        dbCustomer.setEmail("george.washington@wh.gov");
+        dbCustomer = customerDAO.update(dbCustomer);
+        System.out.println(dbCustomer);
+
+    }
+
+    private static void getOrder(OrdersDAO ordersDAO, long l) {
+        Orders dbOrder = ordersDAO.findById(l);
+        System.out.println(dbOrder);
     }
 }
