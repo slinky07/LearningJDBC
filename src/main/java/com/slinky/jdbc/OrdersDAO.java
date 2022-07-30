@@ -54,21 +54,10 @@ public class OrdersDAO extends DataAccessObject<Orders> {
                     CustomerDAO customerDAO = new CustomerDAO(this.connection);
                     customer = customerDAO.findById(rs.getLong("customer_id"));
                     orders.setCustomer(customer);
-                   /* customer.setId(rs.getLong("customer_id"));
-                    customer.setFirstName(rs.getString("first_name"));
-                    customer.setLastName(rs.getString("last_name"));
-                    customer.setEmail(rs.getString("email"));
-                    orders.setCustomer(customer);*/
 
                     SalespersonDAO salespersonDAO = new SalespersonDAO(this.connection);
                     salesperson = salespersonDAO.findById(rs.getLong("salesperson_id"));
                     orders.setSalesperson(salesperson);
-
-                    /*salesperson.setId(rs.getLong("salesperson_id"));
-                    salesperson.setFirstName(rs.getString("first_name"));
-                    salesperson.setLastName(rs.getString("last_name"));
-                    salesperson.setEmail(rs.getString("email"));
-                    orders.setSalesperson(salesperson);*/
                 }
                 // create order_item obj
                 OrderItem orderItem = new OrderItem();
