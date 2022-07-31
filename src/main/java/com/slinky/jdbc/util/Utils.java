@@ -1,11 +1,13 @@
 package com.slinky.jdbc.util;
 
+import com.slinky.jdbc.pojo.Customer;
 import com.slinky.jdbc.pojo.Person;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class Utils {
     /**
@@ -23,19 +25,22 @@ public class Utils {
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
-                person.setId(rs.getLong(ID_NAME));
-                person.setFirstName(rs.getString("first_name"));
-                person.setLastName(rs.getString("last_name"));
-                person.setEmail(rs.getString("email"));
-                person.setPhone(rs.getString("phone"));
-                person.setAddress(rs.getString("address"));
-                person.setCity(rs.getString("city"));
-                person.setState(rs.getString("state"));
-                person.setZipCode(rs.getString("zipcode"));
+                handlePerson(person, ID_NAME, rs);
             }
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+    public static void handlePerson(Person person, String ID_NAME, ResultSet rs) throws SQLException {
+        person.setId(rs.getLong(ID_NAME));
+        person.setFirstName(rs.getString("first_name"));
+        person.setLastName(rs.getString("last_name"));
+        person.setEmail(rs.getString("email"));
+        person.setPhone(rs.getString("phone"));
+        person.setAddress(rs.getString("address"));
+        person.setCity(rs.getString("city"));
+        person.setState(rs.getString("state"));
+        person.setZipCode(rs.getString("zipcode"));
     }
 }

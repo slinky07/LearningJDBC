@@ -28,7 +28,8 @@ public class JDBCExecutor {
 //            routine2(customerDAO);
 //            routine(customerDAO);
 //            getOrder(ordersDAO, 1000);
-            getOrderSP(ordersDAO,789);
+//            getOrderSP(ordersDAO,789);
+            getAllSorted(customerDAO, 1000);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -88,5 +89,9 @@ public class JDBCExecutor {
     private static void getOrderSP (OrdersDAO ordersDAO, long l) {
         List<Order> orders = ordersDAO.getOrdersForCustomer(l);
         orders.forEach(System.out::println);
+    }
+
+    private static void getAllSorted(CustomerDAO customerDAO, int limit) {
+        customerDAO.findAllSorted(limit).forEach(System.out::println);
     }
 }

@@ -118,7 +118,7 @@ public class Order implements DataTransferObject {
                 "\tcustomer_id=" + customer_id + ",\n" +
                 "\tsalesperson_id=" + salesperson_id + ",\n" +
                 " \n CUSTOMER= {\n\t" + customer.toString() +
-                ", \n}\t\n\n SALESPERSON={\n\t" + salesperson.toString() +
+                ",\t\n\n SALESPERSON={\n\t" + salesperson.toString() +
                 ", \n}\t\n\n ORDER_ITEM_LIST={\n");
         for (OrderItem orderItem : orderItemList) {
             str.append("\t\t"+orderItem.toString()+",");

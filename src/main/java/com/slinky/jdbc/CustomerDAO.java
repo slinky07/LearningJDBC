@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerDAO extends DataAccessObject<Customer> {
@@ -28,6 +29,10 @@ public class CustomerDAO extends DataAccessObject<Customer> {
 
     private static final String DELETE =
             "DELETE FROM customer WHERE customer_id = ?";
+
+    private static final String GET_ALL_LIMIT = "SELECT customer_id, first_name, last_name," +
+            "email, phone, address, city, state, zipcode " +
+            "FROM customer ORDER BY last_name, first_name LIMIT ? ";
 
     private static final String ID_NAME = "customer_id";
 
@@ -89,6 +94,24 @@ public class CustomerDAO extends DataAccessObject<Customer> {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    public List<Customer> findAllSorted(int limit) {
+        List<Customer> customers = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(GET_ALL_LIMIT)) {
+            statement.setInt(1, limit);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                Customer customer = new Customer();
+                Utils.handlePerson(customer, ID_NAME, rs); // could have also searched the ID
+                customers.add(customer);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return customers;
     }
 
     /**
