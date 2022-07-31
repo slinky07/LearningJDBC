@@ -8,9 +8,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class OrdersDAO extends DataAccessObject<Orders> {
+public class OrdersDAO extends DataAccessObject<Order> {
     private static final String GET_BY_ID = "SELECT " +
             "o.order_id, o.creation_date, o.total_due,o.status as orders_status, " +
             "o.customer_id, o.salesperson_id,"+
@@ -23,13 +24,14 @@ public class OrdersDAO extends DataAccessObject<Orders> {
             "join order_item oi on o.order_id = oi.order_id " +
             "join product p on oi.product_id = p.product_id " +
             "WHERE o.order_id=?";
+    private static final String GET_FOR_CUST = "SELECT * FROM get_orders_by_customer(?)";
     public OrdersDAO(Connection connection) {
         super(connection);
     }
 
     @Override
-    public Orders findById(long id) {
-        Orders orders = new Orders();
+    public Order findById(long id) {
+        Order orders = new Order();
         Customer customer;
         Salesperson salesperson = new Salesperson();
 
@@ -38,8 +40,8 @@ public class OrdersDAO extends DataAccessObject<Orders> {
 
         try (PreparedStatement statement = this.connection.prepareStatement(GET_BY_ID)) {
         statement.setLong(1, id);
-            ResultSet rs = statement.executeQuery();
-            long orderId = 0;
+        ResultSet rs = statement.executeQuery();
+        long orderId = 0;
 
             while (rs.next()) {
                 if (orderId == 0) { //prevent these being set multiple time
@@ -54,8 +56,7 @@ public class OrdersDAO extends DataAccessObject<Orders> {
                     salesperson = salespersonDAO.findById(rs.getLong("salesperson_id"));
                     orders.setSalesperson(salesperson);
                 }
-                // create order_item obj
-                OrderItem orderItem = new OrderItem();
+                 OrderItem orderItem = new OrderItem();
                 opsOrderItemSet(rs, orderItem);
 
                 //TODO: make productDAO
@@ -73,23 +74,77 @@ public class OrdersDAO extends DataAccessObject<Orders> {
     }
 
     @Override
-    public List<Orders> findAll() {
+    public List<Order> findAll() {
         return null;
     }
 
     @Override
-    public Orders update(Orders dto) {
+    public Order update(Order dto) {
         return null;
     }
 
     @Override
-    public Orders create(Orders dto) {
+    public Order create(Order dto) {
         return null;
     }
 
     @Override
     public void delete(long id) {
 
+    }
+
+    public List<Order> getOrdersForCustomer(long customerId) {
+        List<Order> orders = new ArrayList<>();
+        try (PreparedStatement statement = this.connection.prepareStatement(GET_FOR_CUST)) {
+            statement.setLong(1, customerId);
+            ResultSet rs = statement.executeQuery();
+            long orderId = 0;
+            Order order = null;
+            while (rs.next()) {
+                long localOrderId = rs.getLong(4);
+                if (orderId != localOrderId) {
+                    order = new Order();
+                    orders.add(order);
+                    order.setId(localOrderId);
+                    orderId = localOrderId;
+
+                    Customer customer = new Customer();
+                    customer.setFirstName(rs.getString(1));
+                    customer.setLastName(rs.getString(2));
+                    customer.setEmail(rs.getString(3));
+                    order.setCustomer(customer);
+
+                    order.setCreation_date(new Date(rs.getDate(5).getTime()));
+                    order.setTotal_due(rs.getDouble(6));
+                    order.setStatus(rs.getString(7));
+
+                    Salesperson salesperson = new Salesperson();
+                    salesperson.setFirstName(rs.getString(8));
+                    salesperson.setLastName(rs.getString(9));
+                    salesperson.setEmail(rs.getString(10));
+                    order.setSalesperson(salesperson);
+                    List<OrderItem> orderItemList = new ArrayList<>();
+                    order.setOrderItemList(orderItemList);
+                }
+                OrderItem orderItem = new OrderItem();
+                orderItem.setOrder_id(orderId);
+                orderItem.setQuantity(rs.getInt(11));
+
+                Product product = new Product();
+                product.setCode(rs.getString(12));
+                product.setName(rs.getString(13));
+                product.setSize(rs.getInt(14));
+                product.setVariety(rs.getString(15));
+                product.setPrice(rs.getDouble(16));
+                orderItem.setProduct(product);
+
+                order.getOrderItemList().add(orderItem);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return orders;
     }
 
     private void opsProductSet(ResultSet rs, Product product) throws SQLException {
@@ -107,9 +162,9 @@ public class OrdersDAO extends DataAccessObject<Orders> {
         orderItem.setQuantity(rs.getInt("quantity"));
     }
 
-    private void opsOrderSet(ResultSet rs, Orders orders) throws SQLException {
+    private void opsOrderSet(ResultSet rs, Order orders) throws SQLException {
         orders.setId(rs.getLong("order_id"));
-        orders.setCreation_date(rs.getString("creation_date"));
+        orders.setCreation_date(rs.getDate("creation_date"));
         orders.setTotal_due(rs.getDouble("total_due"));
         orders.setStatus(rs.getString("orders_status"));
         orders.setCustomer_id(rs.getLong("customer_id"));

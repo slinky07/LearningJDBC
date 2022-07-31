@@ -2,11 +2,12 @@ package com.slinky.jdbc.pojo;
 
 import com.slinky.jdbc.util.DataTransferObject;
 
+import java.util.Date;
 import java.util.List;
 
-public class Orders implements DataTransferObject {
+public class Order implements DataTransferObject {
     private long id;
-    private String creation_date;
+    private Date creation_date;
     private double total_due;
     private String status;
     private long customer_id;
@@ -27,11 +28,11 @@ public class Orders implements DataTransferObject {
         this.id = id;
     }
 
-    public String getCreation_date() {
+    public Date getCreation_date() {
         return creation_date;
     }
 
-    public void setCreation_date(String creation_date) {
+    public void setCreation_date(Date creation_date) {
         this.creation_date = creation_date;
     }
 

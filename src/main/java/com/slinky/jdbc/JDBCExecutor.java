@@ -1,10 +1,11 @@
 package com.slinky.jdbc;
 
 import com.slinky.jdbc.pojo.Customer;
-import com.slinky.jdbc.pojo.Orders;
+import com.slinky.jdbc.pojo.Order;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  *
@@ -26,8 +27,8 @@ public class JDBCExecutor {
             OrdersDAO ordersDAO = new OrdersDAO(connection);
 //            routine2(customerDAO);
 //            routine(customerDAO);
-            getOrder(ordersDAO, 1000);
-
+//            getOrder(ordersDAO, 1000);
+            getOrderSP(ordersDAO,789);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -81,7 +82,11 @@ public class JDBCExecutor {
     }
 
     private static void getOrder(OrdersDAO ordersDAO, long l) {
-        Orders dbOrder = ordersDAO.findById(l);
+        Order dbOrder = ordersDAO.findById(l);
         System.out.println(dbOrder);
+    }
+    private static void getOrderSP (OrdersDAO ordersDAO, long l) {
+        List<Order> orders = ordersDAO.getOrdersForCustomer(l);
+        orders.forEach(System.out::println);
     }
 }
