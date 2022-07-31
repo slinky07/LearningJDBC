@@ -10,7 +10,8 @@ public class DatabaseConnectionManager {
     private final Properties properties;
 
     /**
-     * often these will be brought in with a configuration mechanism such as an properties file. doing it this way simplifies the work for the tutorial.
+     * often these will be brought in with a configuration mechanism such as a properties file.
+     * Doing it this way simplifies the work for the course.
      * @param host being host.
      * @param databaseName db name.
      * @param username bring username.
@@ -19,7 +20,7 @@ public class DatabaseConnectionManager {
     public DatabaseConnectionManager(
             String host, String databaseName,
             String username, String password
-    ) {
+    ){
         this.url = "jdbc:postgresql://"+host+"/"+databaseName;
         this.properties = new Properties();
         this.properties.setProperty("user", username);

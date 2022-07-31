@@ -33,6 +33,9 @@ public class CustomerDAO extends DataAccessObject<Customer> {
     private static final String GET_ALL_LIMIT = "SELECT customer_id, first_name, last_name," +
             "email, phone, address, city, state, zipcode " +
             "FROM customer ORDER BY last_name, first_name LIMIT ? ";
+ private static final String GET_ALL_PAGED = "SELECT customer_id, first_name, last_name," +
+            "email, phone, address, city, state, zipcode " +
+            "FROM customer ORDER BY last_name, first_name LIMIT ? OFFSET ?";
 
     private static final String ID_NAME = "customer_id";
 
@@ -55,14 +58,26 @@ public class CustomerDAO extends DataAccessObject<Customer> {
     @Override
     public Customer update(Customer dto) {
         Customer customer = null;
-
+        try {
+            this.connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
         try (PreparedStatement statement = this.connection.prepareStatement(UPDATE);) {
             opsCustomerParams(dto, statement);
             statement.setLong(9, dto.getId()); // which ID to update.
             statement.execute();
+            this.connection.commit();
             customer = this.findById(dto.getId());
 
         } catch (SQLException e) {
+            try {
+                this.connection.rollback();
+            } catch (SQLException exception) {
+                exception.printStackTrace();
+                throw new RuntimeException(exception);
+            }
             e.printStackTrace();
             throw new RuntimeException(e);
         }
@@ -104,7 +119,29 @@ public class CustomerDAO extends DataAccessObject<Customer> {
 
             while (rs.next()) {
                 Customer customer = new Customer();
-                Utils.handlePerson(customer, ID_NAME, rs); // could have also searched the ID
+                Utils.handlePerson(customer, ID_NAME, rs); // could have also searched the ID maybe but slower since it searches again
+                customers.add(customer);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return customers;
+    }
+    public List<Customer> findAllPaged(int limit, int pageNumber) {
+        List<Customer> customers = new ArrayList<>();
+        int offset = ((pageNumber)* limit);
+        try (PreparedStatement statement = connection.prepareStatement(GET_ALL_PAGED)) {
+            if (limit < 1) {
+                limit = 10;
+            }
+            statement.setInt(1, limit);
+            statement.setInt(2, offset);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                Customer customer = new Customer();
+                Utils.handlePerson(customer, ID_NAME, rs); // could have also searched the ID maybe but slower since it searches again
                 customers.add(customer);
             }
         } catch (SQLException e) {

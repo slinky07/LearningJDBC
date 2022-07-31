@@ -29,11 +29,14 @@ public class JDBCExecutor {
 //            routine(customerDAO);
 //            getOrder(ordersDAO, 1000);
 //            getOrderSP(ordersDAO,789);
-            getAllSorted(customerDAO, 1000);
+//            getAllSorted(customerDAO, 20);
+            getAllPaged(customerDAO, 10);
+            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     private static void routine(CustomerDAO customerDAO) {
         Customer customer = new Customer();
@@ -93,5 +96,12 @@ public class JDBCExecutor {
 
     private static void getAllSorted(CustomerDAO customerDAO, int limit) {
         customerDAO.findAllSorted(limit).forEach(System.out::println);
+    }
+    private static void getAllPaged(CustomerDAO customerDAO, int limit) {
+        System.out.println("paged");
+        for (int i = 0; i < 3; i++) {
+            System.out.println("Page Number " + i);
+            customerDAO.findAllPaged(limit, i).forEach(System.out::println);
+        }
     }
 }
