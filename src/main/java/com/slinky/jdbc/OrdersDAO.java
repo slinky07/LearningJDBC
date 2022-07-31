@@ -42,13 +42,8 @@ public class OrdersDAO extends DataAccessObject<Orders> {
             long orderId = 0;
 
             while (rs.next()) {
-                if (orderId == orderId) { //prevent these being set multiple time
-                    orders.setId(rs.getLong("order_id"));
-                    orders.setCreation_date(rs.getString("creation_date"));
-                    orders.setTotal_due(rs.getDouble("total_due"));
-                    orders.setStatus(rs.getString("orders_status"));
-                    orders.setCustomer_id(rs.getLong("customer_id"));
-                    orders.setSalesperson_id(rs.getLong("salesperson_id"));
+                if (orderId == 0) { //prevent these being set multiple time
+                    opsOrderSet(rs, orders);
                     orderId = orders.getId();
 
                     CustomerDAO customerDAO = new CustomerDAO(this.connection);
@@ -61,17 +56,11 @@ public class OrdersDAO extends DataAccessObject<Orders> {
                 }
                 // create order_item obj
                 OrderItem orderItem = new OrderItem();
-                orderItem.setOrder_id(rs.getLong("order_id"));
-                orderItem.setProduct_id(rs.getLong("product_id"));
-                orderItem.setQuantity(rs.getInt("quantity"));
+                opsOrderItemSet(rs, orderItem);
 
+                //TODO: make productDAO
                 Product product = new Product();
-                product.setCode(rs.getString("code"));
-                product.setName(rs.getString("name"));
-                product.setSize(rs.getInt("size"));
-                product.setVariety(rs.getString("variety"));
-                product.setPrice(rs.getDouble("price"));
-                product.setStatus(rs.getString("product_status"));
+                opsProductSet(rs, product);
 
                 orderItem.setProduct(product);
                 orders.addToList(orderItem);
@@ -101,5 +90,29 @@ public class OrdersDAO extends DataAccessObject<Orders> {
     @Override
     public void delete(long id) {
 
+    }
+
+    private void opsProductSet(ResultSet rs, Product product) throws SQLException {
+        product.setCode(rs.getString("code"));
+        product.setName(rs.getString("name"));
+        product.setSize(rs.getInt("size"));
+        product.setVariety(rs.getString("variety"));
+        product.setPrice(rs.getDouble("price"));
+        product.setStatus(rs.getString("product_status"));
+    }
+
+    private void opsOrderItemSet(ResultSet rs, OrderItem orderItem) throws SQLException {
+        orderItem.setOrder_id(rs.getLong("order_id"));
+        orderItem.setProduct_id(rs.getLong("product_id"));
+        orderItem.setQuantity(rs.getInt("quantity"));
+    }
+
+    private void opsOrderSet(ResultSet rs, Orders orders) throws SQLException {
+        orders.setId(rs.getLong("order_id"));
+        orders.setCreation_date(rs.getString("creation_date"));
+        orders.setTotal_due(rs.getDouble("total_due"));
+        orders.setStatus(rs.getString("orders_status"));
+        orders.setCustomer_id(rs.getLong("customer_id"));
+        orders.setSalesperson_id(rs.getLong("salesperson_id"));
     }
 }

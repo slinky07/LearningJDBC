@@ -2,6 +2,7 @@ package com.slinky.jdbc;
 
 import com.slinky.jdbc.pojo.Customer;
 import com.slinky.jdbc.util.DataAccessObject;
+import com.slinky.jdbc.util.Utils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,6 +29,8 @@ public class CustomerDAO extends DataAccessObject<Customer> {
     private static final String DELETE =
             "DELETE FROM customer WHERE customer_id = ?";
 
+    private static final String ID_NAME = "customer_id";
+
     public CustomerDAO(Connection connection) {
         super(connection);
     }
@@ -35,26 +38,7 @@ public class CustomerDAO extends DataAccessObject<Customer> {
     @Override
     public Customer findById(long id) {
         Customer customer = new Customer();
-
-        try (PreparedStatement statement = this.connection.prepareStatement(GET_ONE);) {
-            statement.setLong(1, id);
-            ResultSet rs = statement.executeQuery();
-
-            while (rs.next()) {
-                customer.setId(rs.getLong("customer_id"));
-                customer.setFirstName(rs.getString("first_name"));
-                customer.setLastName(rs.getString("last_name"));
-                customer.setEmail(rs.getString("email"));
-                customer.setPhone(rs.getString("phone"));
-                customer.setAddress(rs.getString("address"));
-                customer.setCity(rs.getString("city"));
-                customer.setState(rs.getString("state"));
-                customer.setZipCode(rs.getString("zipcode"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        Utils.setFromFind(connection, customer, ID_NAME, GET_ONE, id);
         return customer;
     }
 

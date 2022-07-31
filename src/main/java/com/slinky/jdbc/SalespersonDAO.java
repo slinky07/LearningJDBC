@@ -2,6 +2,7 @@ package com.slinky.jdbc;
 
 import com.slinky.jdbc.pojo.Salesperson;
 import com.slinky.jdbc.util.DataAccessObject;
+import com.slinky.jdbc.util.Utils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,6 +16,9 @@ public class SalespersonDAO extends DataAccessObject<Salesperson> {
             "salesperson_id, first_name, last_name," +
             "email, phone, address, city, state, zipcode " +
             "FROM salesperson WHERE salesperson_id = ?";
+
+    private static final String ID_NAME = "salesperson_id";
+
     public SalespersonDAO(Connection connection) {
         super(connection);
     }
@@ -22,26 +26,7 @@ public class SalespersonDAO extends DataAccessObject<Salesperson> {
     @Override
     public Salesperson findById(long id) {
         Salesperson salesperson = new Salesperson();
-
-        try (PreparedStatement statement = this.connection.prepareStatement(GET_BY_ID)) {
-            statement.setLong(1, id);
-            ResultSet rs = statement.executeQuery();
-
-            while (rs.next()) {
-                salesperson.setId(rs.getLong("salesperson_id"));
-                salesperson.setFirstName(rs.getString("first_name"));
-                salesperson.setLastName(rs.getString("last_name"));
-                salesperson.setEmail(rs.getString("email"));
-                salesperson.setPhone(rs.getString("phone"));
-                salesperson.setAddress(rs.getString("address"));
-                salesperson.setCity(rs.getString("city"));
-                salesperson.setState(rs.getString("state"));
-                salesperson.setZipCode(rs.getString("zipcode"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        Utils.setFromFind(connection, salesperson, ID_NAME, GET_BY_ID, id);
         return salesperson;
     }
 

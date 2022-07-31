@@ -2,7 +2,7 @@ package com.slinky.jdbc.pojo;
 
 import com.slinky.jdbc.util.DataTransferObject;
 
-public class Customer implements DataTransferObject {
+public class Customer implements DataTransferObject, Person {
     private long id;
     private String firstName;
     private String lastName;
