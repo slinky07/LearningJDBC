@@ -14,7 +14,7 @@ public class Utils {
      * Tables Salesperson and Customer are actually identical, therefore the find by ID methods
      * for those will be duplicated code. I pulled it out and made them common type.
      * @param connection database connection within the superclass.
-     * @param person either Customer or Salesperson obj
+     * @param person any classes implementing Person interface 
      * @param ID_NAME is name of ID record in the respective tables.
      * @param GET_BY_ID is a String sql statement.
      * @param id is ID to find.
